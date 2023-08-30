@@ -31,6 +31,7 @@ func Login(input *models.Input) (cookies []*http.Cookie, err error) {
 	}
 	if (*content)["success"] != true {
 		fmt.Println((*content)["errorMessage"])
+		return
 	} else {
 		fmt.Println("Login successful")
 	}
@@ -41,7 +42,7 @@ func Login(input *models.Input) (cookies []*http.Cookie, err error) {
 }
 
 func GetVideos(id int) (videos map[float64]float64, err error) {
-	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg_anon/courseGraduation/getDetails?objectId=%d&t=1693229715884", id)
+	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg_anon/courseGraduation/getDetails?objectId=%d", id)
 	resp, err := global.Client.Get(URL)
 	res := new(map[string]any)
 	err = json.NewDecoder(resp.Body).Decode(&res)
@@ -65,7 +66,6 @@ func ReplayAttack(videos map[float64]float64, cookies []*http.Cookie) {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	for _, cookie := range cookies {
 		req.AddCookie(cookie)
-		fmt.Println(cookie)
 	}
 	for videoID, duration := range videos {
 		data := url.Values{
