@@ -12,8 +12,16 @@ func GetUserInput() (input *models.Input) {
 	fmt.Scanln(&input.UserName)
 	fmt.Println("PassWord:")
 	fmt.Scanln(&input.Password)
-	fmt.Println("CourseID:")
-	fmt.Scanln(&global.CourseID)
+	fmt.Println("Model:")
+	fmt.Scanln(&global.Model)
+	switch global.Model {
+	case 1:
+		fmt.Println("PreviewID:")
+		fmt.Scanln(&global.PreviewID)
+	case 2:
+		fmt.Println("CourseID:")
+		fmt.Scanln(&global.CourseID)
+	}
 
 	return
 }

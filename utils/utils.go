@@ -1,33 +1,19 @@
 package utils
 
 import (
-	"errors"
 	"goWatchYourself/global"
+	"net/http"
 	"time"
 )
 
-func ParseMap(m map[string]any) (videos map[float64]float64, err error) {
-	resultObject, ok := m["resultObject"]
-	if !ok {
-		err = errors.New("can`t parse resultObject")
-		return
-	}
-	videoList, ok := resultObject.(map[string]any)["videos"]
-	if !ok {
-		err = errors.New("can`t parse videos")
-		return
-	}
-	videos = make(map[float64]float64)
-	for _, v := range videoList.([]any) {
-		id := v.(map[string]any)["id"]
-		duration := v.(map[string]any)["duration"]
-		videos[id.(float64)] = duration.(float64)
-	}
-
-	return
+func RandomSleep() {
+	t := global.Rand.Intn(1500)
+	time.Sleep(time.Duration(t) * time.Millisecond)
 }
 
-func RandomSleep() {
-	t := global.Rand.Intn(1000)
-	time.Sleep(time.Duration(t) * time.Millisecond)
+func SetHeader(req *http.Request) {
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0")
+	req.Header.Add("Accept", "application/json, text/plain, */*")
+	req.Header.Add("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 }

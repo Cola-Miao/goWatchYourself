@@ -6,7 +6,9 @@ import (
 )
 
 var (
-	Client   *http.Client
-	CourseID int
-	Rand     *rand.Rand
+	Client    *http.Client
+	CourseID  int
+	PreviewID string
+	Model     int
+	Rand      *rand.Rand
 )
