@@ -2,6 +2,7 @@ package method
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"goWatchYourself/global"
 	"goWatchYourself/models"
@@ -11,6 +12,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 func Login(input *models.Input) (cookies []*http.Cookie, err error) {
@@ -30,12 +32,11 @@ func Login(input *models.Input) (cookies []*http.Cookie, err error) {
 		return
 	}
 	if (*content)["success"] != true {
-		fmt.Println((*content)["errorMessage"])
+		err = errors.New((*content)["errorMessage"].(string))
 		return
 	} else {
 		fmt.Println("Login successful")
 	}
-
 	cookies = resp.Cookies()
 
 	return
@@ -50,11 +51,15 @@ func GetVideos(id int) (videos map[float64]float64, err error) {
 		return
 	}
 	videos, err = utils.ParseMap(*res)
+	if err != nil {
+		return
+	}
 
 	return
 }
 
 func ReplayAttack(videos map[float64]float64, cookies []*http.Cookie) {
+	var wg sync.WaitGroup
 	urlS := "https://stu.ityxb.com/back/bxg_anon/courseGraduation/record"
 	req, err := http.NewRequest("POST", urlS, nil)
 	if err != nil {
@@ -68,21 +73,31 @@ func ReplayAttack(videos map[float64]float64, cookies []*http.Cookie) {
 		req.AddCookie(cookie)
 	}
 	for videoID, duration := range videos {
-		data := url.Values{
-			"duration": {fmt.Sprintf("%.0f", duration)},
-			"courseId": {strconv.Itoa(global.CourseID)},
-			"videoId":  {fmt.Sprintf("%.0f", videoID)},
-		}
-		body := strings.NewReader(data.Encode())
-		rc := io.NopCloser(body)
-		req.Body = rc
-		_, err := global.Client.Do(req)
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Println("working...")
+		wg.Add(1)
+		go generatedPOST(videoID, duration, req, &wg)
 	}
+	wg.Wait()
 	fmt.Println("Done")
+
+	return
+}
+
+func generatedPOST(videoID, duration float64, req *http.Request, wg *sync.WaitGroup) {
+	utils.RandomSleep()
+	data := url.Values{
+		"duration": {fmt.Sprintf("%.0f", duration)},
+		"courseId": {strconv.Itoa(global.CourseID)},
+		"videoId":  {fmt.Sprintf("%.0f", videoID)},
+	}
+	body := strings.NewReader(data.Encode())
+	rc := io.NopCloser(body)
+	req.Body = rc
+	_, err := global.Client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("working...")
+	(*wg).Done()
 
 	return
 }
