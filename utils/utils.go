@@ -1,13 +1,14 @@
 package utils
 
 import (
+	"fmt"
 	"goWatchYourself/global"
 	"net/http"
 	"time"
 )
 
 func RandomSleep() {
-	t := global.Rand.Intn(1500)
+	t := global.Rand.Intn(2000)
 	time.Sleep(time.Duration(t) * time.Millisecond)
 }
 
@@ -16,4 +17,12 @@ func SetHeader(req *http.Request) {
 	req.Header.Add("Accept", "application/json, text/plain, */*")
 	req.Header.Add("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+}
+
+func Version() {
+	fmt.Println("Version: ", global.Version)
+}
+
+func WaitAnyKey() {
+	fmt.Scanln()
 }

@@ -1,7 +1,6 @@
 package method
 
 import (
-	"encoding/json"
 	"fmt"
 	"goWatchYourself/global"
 	"goWatchYourself/utils"
@@ -15,7 +14,7 @@ import (
 type PreviewClass struct {
 }
 
-func (p PreviewClass) getChapters(previewID string, cookies []*http.Cookie) (chapters map[string]float64, err error) {
+func (p PreviewClass) getPoints(previewID string, cookies []*http.Cookie) (points map[string]float64, err error) {
 	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg/preview/info?previewId=%s", previewID)
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
@@ -26,21 +25,19 @@ func (p PreviewClass) getChapters(previewID string, cookies []*http.Cookie) (cha
 		req.AddCookie(cookie)
 	}
 	resp, err := global.Client.Do(req)
-	res := new(map[string]any)
-	err = json.NewDecoder(resp.Body).Decode(&res)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}
-	chapters, err = utils.ParsePreviewMap(*res)
+	points, err = utils.NewParsePreviewMap(body)
 	if err != nil {
 		return
 	}
-	fmt.Println(chapters)
 
 	return
 }
 
-func (p PreviewClass) replayAttack(chapters map[string]float64, cookies []*http.Cookie) {
+func (p PreviewClass) replayAttack(points map[string]float64, cookies []*http.Cookie) {
 	var wg sync.WaitGroup
 	urlS := "https://stu.ityxb.com/back/bxg/preview/updateProgress"
 	req, err := http.NewRequest("POST", urlS, nil)
@@ -51,7 +48,7 @@ func (p PreviewClass) replayAttack(chapters map[string]float64, cookies []*http.
 	for _, cookie := range cookies {
 		req.AddCookie(cookie)
 	}
-	for pointID, videoDuration := range chapters {
+	for pointID, videoDuration := range points {
 		wg.Add(1)
 		go p.generatedPOST(pointID, videoDuration, req, &wg)
 	}
@@ -82,10 +79,10 @@ func (p PreviewClass) generatedPOST(pointID string, videoDuration float64, req *
 }
 
 func (p PreviewClass) Watch(cookies []*http.Cookie) {
-	chapters, err := p.getChapters(global.PreviewID, cookies)
+	points, err := p.getPoints(global.PreviewID, cookies)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	p.replayAttack(chapters, cookies)
+	p.replayAttack(points, cookies)
 }

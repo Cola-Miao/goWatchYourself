@@ -1,7 +1,6 @@
 package method
 
 import (
-	"encoding/json"
 	"fmt"
 	"goWatchYourself/global"
 	"goWatchYourself/utils"
@@ -19,12 +18,11 @@ type FreeClass struct {
 func (f FreeClass) getVideos(id int) (videos map[float64]float64, err error) {
 	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg_anon/courseGraduation/getDetails?objectId=%d", id)
 	resp, err := global.Client.Get(URL)
-	res := new(map[string]any)
-	err = json.NewDecoder(resp.Body).Decode(&res)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}
-	videos, err = utils.ParseFreeMap(*res)
+	videos, err = utils.ParseFreeMap(body)
 	if err != nil {
 		return
 	}

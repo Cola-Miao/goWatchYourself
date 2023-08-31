@@ -6,9 +6,12 @@ import (
 )
 
 var (
-	Client    *http.Client
-	CourseID  int
-	PreviewID string
-	Model     int
-	Rand      *rand.Rand
+	Client        *http.Client
+	CourseID      int
+	PreviewID     string
+	Model         int
+	Rand          *rand.Rand
+	Version       = "0.5"
+	DebugUserName = "15526811889"
+	DebugPassword = "@123456ABcdqqqq"
 )

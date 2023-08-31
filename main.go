@@ -1,14 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"goWatchYourself/initialize"
+	"goWatchYourself/utils"
 	"goWatchYourself/watcher"
 )
 
 func main() {
+	utils.Version()
 	initialize.InitDefault()
 	watcher.Watcher()
 
-	fmt.Scanln()
+	utils.WaitAnyKey()
 }
