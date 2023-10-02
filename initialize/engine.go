@@ -1,17 +1,23 @@
 package initialize
 
 import (
+	"embed"
 	"github.com/gin-gonic/gin"
 	"goWatchYourself/global"
 	"goWatchYourself/models"
 	"goWatchYourself/watcher"
+	"html/template"
 	"net/http"
 )
 
+//go:embed template/*
+var fs embed.FS
+
 func initEngine() {
 	e := gin.Default()
-
-	e.LoadHTMLGlob("template/*")
+	tpl := template.Must(template.New("").ParseFS(fs, "template/*.gohtml"))
+	e.SetHTMLTemplate(tpl)
+	//e.LoadHTMLGlob("template/*.gohtml")
 
 	v1 := e.Group("/")
 	{

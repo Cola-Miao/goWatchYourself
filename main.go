@@ -5,12 +5,20 @@ import (
 	"goWatchYourself/initialize"
 	"goWatchYourself/utils"
 	"log"
-	"os/exec"
 )
 
 func main() {
-	utils.Version()
-	initialize.Initialize()
-	log.Println(exec.Command(`cmd`, `/c`, `start`, global.DefaultAddr).Start())
-	log.Fatalln(global.Engine.Run(global.Addr))
+	var err error
+
+	if err = initialize.Initialize(); err != nil {
+		log.Fatalln(err)
+	}
+	go func() {
+		if err = utils.OpenBrowser(); err != nil {
+			log.Println(err)
+		}
+	}()
+	if err = global.Engine.Run(global.Addr); err != nil {
+		log.Fatalln(err)
+	}
 }

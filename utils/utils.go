@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goWatchYourself/global"
 	"net/http"
+	"os/exec"
 	"time"
 )
 
@@ -16,6 +17,12 @@ func SetHeader(req *http.Request) {
 	req.Header.Add("Accept", global.Accept)
 	req.Header.Add("Accept-Language", global.AcceptLanguage)
 	req.Header.Add("Content-Type", global.ContentType)
+}
+
+func OpenBrowser() (err error) {
+	err = exec.Command(`cmd`, `/c`, `start`, global.DefaultAddr).Start()
+
+	return
 }
 
 func Version() {
