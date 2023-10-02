@@ -5,6 +5,7 @@ import (
 	"goWatchYourself/global"
 	"goWatchYourself/utils"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,13 +19,16 @@ func (p PreviewClass) getPoints(previewID string, cookies []*http.Cookie) (point
 	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg/preview/info?previewId=%s", previewID)
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 	utils.SetHeader(req)
 	for _, cookie := range cookies {
 		req.AddCookie(cookie)
 	}
 	resp, err := global.Client.Do(req)
+	if err != nil {
+		return
+	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
@@ -42,7 +46,7 @@ func (p PreviewClass) replayAttack(points map[string]float64, cookies []*http.Co
 	urlS := "https://stu.ityxb.com/back/bxg/preview/updateProgress"
 	req, err := http.NewRequest("POST", urlS, nil)
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 	utils.SetHeader(req)
 	for _, cookie := range cookies {
@@ -60,29 +64,31 @@ func (p PreviewClass) replayAttack(points map[string]float64, cookies []*http.Co
 }
 
 func (p PreviewClass) generatedPOST(pointID string, videoDuration float64, req *http.Request, wg *sync.WaitGroup) {
+	defer wg.Done()
 	data := url.Values{
 		"previewId":       {global.PreviewID},
 		"pointId":         {pointID},
 		"watchedDuration": {fmt.Sprintf("%.0f", videoDuration)},
 	}
+
 	body := strings.NewReader(data.Encode())
 	rc := io.NopCloser(body)
 	req.Body = rc
 	_, err := global.Client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	fmt.Println("working...")
-	(*wg).Done()
 
 	return
 }
 
-func (p PreviewClass) Watch(cookies []*http.Cookie) {
+func (p PreviewClass) Watch(cookies []*http.Cookie) (err error) {
 	points, err := p.getPoints(global.PreviewID, cookies)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	p.replayAttack(points, cookies)
+
+	return
 }

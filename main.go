@@ -1,15 +1,16 @@
 package main
 
 import (
+	"goWatchYourself/global"
 	"goWatchYourself/initialize"
 	"goWatchYourself/utils"
-	"goWatchYourself/watcher"
+	"log"
+	"os/exec"
 )
 
 func main() {
 	utils.Version()
-	initialize.InitDefault()
-	watcher.Watcher()
-
-	utils.WaitAnyKey()
+	initialize.Initialize()
+	log.Println(exec.Command(`cmd`, `/c`, `start`, global.DefaultAddr).Start())
+	log.Fatalln(global.Engine.Run(global.Addr))
 }

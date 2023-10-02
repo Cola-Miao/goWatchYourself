@@ -2,25 +2,34 @@ package watcher
 
 import (
 	"fmt"
-	"goWatchYourself/api"
 	"goWatchYourself/global"
 	"goWatchYourself/method"
+	"goWatchYourself/models"
 	"goWatchYourself/text"
 )
 
-func Watcher() {
-	input := api.GetUserInput()
-	cookies, err := method.Login(input)
+func Watcher(form *models.Form) (err error) {
+	cookies, err := method.Login(&form.User)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
-	switch global.Model {
+
+	switch form.Model {
 	case 1:
-		method.PreviewClass{}.Watch(cookies)
+		global.PreviewID = form.Class.ID
+		err = method.PreviewClass{}.Watch(cookies)
+		if err != nil {
+			return
+		}
 	case 2:
-		method.FreeClass{}.Watch(cookies)
+		global.CourseID = form.Class.ID
+		err = method.FreeClass{}.Watch(cookies)
+		if err != nil {
+			return
+		}
 	default:
 		fmt.Println(text.WrongInput)
 	}
+
+	return
 }

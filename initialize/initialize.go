@@ -1,5 +1,6 @@
 package initialize
 
-func InitDefault() {
+func Initialize() {
+	initEngine()
 	initClient()
 }

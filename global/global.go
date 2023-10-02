@@ -6,9 +6,7 @@ import (
 )
 
 const (
-	Version       = "0.55"
-	DebugUserName = "15526811889"
-	DebugPassword = "@123456ABcdqqqq"
+	Version = "0.6"
 
 	UserAgent      = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0"
 	Accept         = "application/json, text/plain, */*"
@@ -16,12 +14,14 @@ const (
 	ContentType    = "application/x-www-form-urlencoded"
 
 	WaitTime = 2
+
+	Addr        = "localhost:5912"
+	DefaultAddr = "http://localhost:5912/index"
 )
 
 var (
 	Engine    *gin.Engine
 	Client    *http.Client
-	CourseID  int
+	CourseID  string
 	PreviewID string
-	Model     int
 )

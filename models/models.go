@@ -1,12 +1,16 @@
 package models
 
-type Input struct {
-	UserName string
-	Password string
+type User struct {
+	UserName string `form:"userName"`
+	Password string `form:"password"`
 }
 
-type Login struct {
-	AutomaticLogon string
-	UserName       string
-	Password       string
+type Class struct {
+	Model int    `form:"model"`
+	ID    string `form:"classID"`
+}
+
+type Form struct {
+	User
+	Class
 }

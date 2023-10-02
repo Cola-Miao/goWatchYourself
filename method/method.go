@@ -10,7 +10,7 @@ import (
 	"net/url"
 )
 
-func Login(input *models.Input) (cookies []*http.Cookie, err error) {
+func Login(input *models.User) (cookies []*http.Cookie, err error) {
 	urlValues := url.Values{
 		"username":       {input.UserName},
 		"password":       {input.Password},

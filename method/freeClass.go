@@ -5,9 +5,9 @@ import (
 	"goWatchYourself/global"
 	"goWatchYourself/utils"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"sync"
 )
@@ -15,9 +15,12 @@ import (
 type FreeClass struct {
 }
 
-func (f FreeClass) getVideos(id int) (videos map[float64]float64, err error) {
-	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg_anon/courseGraduation/getDetails?objectId=%d", id)
+func (f FreeClass) getVideos(id string) (videos map[float64]float64, err error) {
+	URL := fmt.Sprintf("https://stu.ityxb.com/back/bxg_anon/courseGraduation/getDetails?objectId=%s", id)
 	resp, err := global.Client.Get(URL)
+	if err != nil {
+		return
+	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
@@ -35,7 +38,7 @@ func (f FreeClass) replayAttack(videos map[float64]float64, cookies []*http.Cook
 	urlS := "https://stu.ityxb.com/back/bxg_anon/courseGraduation/record"
 	req, err := http.NewRequest("POST", urlS, nil)
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 	utils.SetHeader(req)
 	for _, cookie := range cookies {
@@ -55,7 +58,7 @@ func (f FreeClass) replayAttack(videos map[float64]float64, cookies []*http.Cook
 func (f FreeClass) generatedPOST(videoID, duration float64, req *http.Request, wg *sync.WaitGroup) {
 	data := url.Values{
 		"duration": {fmt.Sprintf("%.0f", duration)},
-		"courseId": {strconv.Itoa(global.CourseID)},
+		"courseId": {global.CourseID},
 		"videoId":  {fmt.Sprintf("%.0f", videoID)},
 	}
 	body := strings.NewReader(data.Encode())
@@ -63,7 +66,7 @@ func (f FreeClass) generatedPOST(videoID, duration float64, req *http.Request, w
 	req.Body = rc
 	_, err := global.Client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	fmt.Println("working...")
 	(*wg).Done()
@@ -71,11 +74,12 @@ func (f FreeClass) generatedPOST(videoID, duration float64, req *http.Request, w
 	return
 }
 
-func (f FreeClass) Watch(cookies []*http.Cookie) {
+func (f FreeClass) Watch(cookies []*http.Cookie) (err error) {
 	videos, err := f.getVideos(global.CourseID)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	f.replayAttack(videos, cookies)
+
+	return
 }

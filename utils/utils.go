@@ -21,7 +21,3 @@ func SetHeader(req *http.Request) {
 func Version() {
 	fmt.Println("Version: ", global.Version)
 }
-
-func WaitAnyKey() {
-	fmt.Scanln()
-}
