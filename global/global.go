@@ -1,7 +1,7 @@
 package global
 
 import (
-	"math/rand"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
@@ -19,9 +19,9 @@ const (
 )
 
 var (
+	Engine    *gin.Engine
 	Client    *http.Client
 	CourseID  int
 	PreviewID string
 	Model     int
-	Rand      *rand.Rand
 )
