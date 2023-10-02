@@ -51,6 +51,7 @@ func (p PreviewClass) replayAttack(points map[string]float64, cookies []*http.Co
 	for pointID, videoDuration := range points {
 		wg.Add(1)
 		go p.generatedPOST(pointID, videoDuration, req, &wg)
+		utils.WaitTime()
 	}
 	wg.Wait()
 	fmt.Println("Done")
@@ -59,7 +60,6 @@ func (p PreviewClass) replayAttack(points map[string]float64, cookies []*http.Co
 }
 
 func (p PreviewClass) generatedPOST(pointID string, videoDuration float64, req *http.Request, wg *sync.WaitGroup) {
-	utils.RandomSleep()
 	data := url.Values{
 		"previewId":       {global.PreviewID},
 		"pointId":         {pointID},

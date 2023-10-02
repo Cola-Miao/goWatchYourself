@@ -5,6 +5,7 @@ import (
 	"goWatchYourself/api"
 	"goWatchYourself/global"
 	"goWatchYourself/method"
+	"goWatchYourself/text"
 )
 
 func Watcher() {
@@ -20,6 +21,6 @@ func Watcher() {
 	case 2:
 		method.FreeClass{}.Watch(cookies)
 	default:
-		fmt.Println("wrong input")
+		fmt.Println(text.WrongInput)
 	}
 }

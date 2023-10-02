@@ -44,6 +44,7 @@ func (f FreeClass) replayAttack(videos map[float64]float64, cookies []*http.Cook
 	for videoID, duration := range videos {
 		wg.Add(1)
 		go f.generatedPOST(videoID, duration, req, &wg)
+		utils.WaitTime()
 	}
 	wg.Wait()
 	fmt.Println("Done")
@@ -52,7 +53,6 @@ func (f FreeClass) replayAttack(videos map[float64]float64, cookies []*http.Cook
 }
 
 func (f FreeClass) generatedPOST(videoID, duration float64, req *http.Request, wg *sync.WaitGroup) {
-	utils.RandomSleep()
 	data := url.Values{
 		"duration": {fmt.Sprintf("%.0f", duration)},
 		"courseId": {strconv.Itoa(global.CourseID)},
