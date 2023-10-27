@@ -3,19 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
+    <style>
+        html{
+            height: 100%;
+            width: 100%;
+            display: flex;
+        }
+        body{
+            margin: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #lk{
+            flex: 1;
+            background: aquamarine;
+        }
+        #fm{
+            flex: 8;
+            background: bisque;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #fm form{
+            border: solid;
+            border-radius: 1rem;
+            flex: 0.4;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
 </head>
 <body>
-    <a href="https://stu.ityxb.com/" target="_blank">传智教育平台</a>
-    <form method="post" action="/index">
-        <p><input type="text" name="userName" placeholder="用户名"></p>
-        <p><input type="password" name="password" placeholder="密码"></p>
+    <div id="lk">
+        <a href="https://stu.ityxb.com/" target="_blank">传智教育平台</a>
+    </div>
+    <div id="fm">
+        <form method="post" action="/index">
+            <p><input type="text" name="userName" placeholder="用户名"></p>
+            <p><input type="password" name="password" placeholder="密码"></p>
 
-        <p><select name="model">
-                <option value="1">预习课</option>
-                <option value="2">免费课</option>
-            </select></p>
-        <p><input type="text" name="classID" placeholder="课程ID"></p>
-        <button>GO!</button>
-    </form>
+            <p><select name="model">
+                    <option value="1">预习课</option>
+                    <option value="2">免费课</option>
+                </select></p>
+            <p><input type="text" name="classID" placeholder="课程ID"></p>
+            <button>GO!</button>
+        </form>
+    </div>
 </body>
 </html>
